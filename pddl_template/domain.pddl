@@ -18,33 +18,36 @@
     )
 
     ; You may introduce whatever predicates you would like to use
-    (:predicates
+(:predicates
+    ; given
+    (hero-at ?loc - location)
 
-        ; One predicate given for free!
-        (hero-at ?loc - location)
+    ; map / connectivity
+    (connects ?cor - corridor ?a - location ?b - location)
+    (touches ?cor - corridor ?loc - location)
 
-        (adjacent ?from ?to - location ?cor - corridor)
-        (touches ?loc - location ?cor - corridor)
+    ; corridor state
+    (locked ?cor - corridor)
+    (lock-colour ?cor - corridor ?col - colour)
+    (risky ?cor - corridor)
+    (collapsed ?cor - corridor)
 
-        (key-at ?k - key ?loc - location)
-        (holding ?k - key)
-        (handfree)
+    ; room state
+    (messy ?loc - location)
 
-        (locked ?cor - corridor)
-        (lock-colour ?cor - corridor ?col - colour)
-        (collapsed ?cor - corridor)
-        (risky ?cor - corridor)
+    ; keys & inventory
+    (key-at ?k - key ?loc - location)
+    (holding ?k - key)
+    (arm-free)
 
-        (messy ?loc - location)
-
-        (key-colour ?k - key ?col - colour)
-        (one-use ?k - key)
-        (two-use ?k - key)
-        (used-once ?k - key)
-        (used-twice ?k - key)
-        (usable ?k - key)
-
-    )
+    ; key attributes & durability
+    (key-colour ?k - key ?col - colour)
+    (usable ?k - key)
+    (one-use ?k - key)
+    (two-use ?k - key)
+    (multi-use ?k - key)
+    (used-once ?k - key)
+)
 
     ; IMPORTANT: You should not change/add/remove the action names or parameters
 
@@ -60,14 +63,17 @@
 
         :precondition (and
             (hero-at ?from)
-            (adjacent ?from ?to ?cor)
+            (or
+                (connects ?cor ?from ?to)
+                (connects ?cor ?to ?from)
+            )
             (not (locked ?cor))
             (not (collapsed ?cor))
         )
-
         :effect (and
             (not (hero-at ?from))
             (hero-at ?to)
+
             (when (risky ?cor)
                 (and
                     (collapsed ?cor)
@@ -76,6 +82,7 @@
             )
         )
     )
+
 
     ;Hero can pick up a key if the
     ;    - hero is at current location ?loc,
@@ -90,14 +97,14 @@
         :precondition (and
             (hero-at ?loc)
             (key-at ?k ?loc)
-            (handfree)
+            (arm-free)
             (not (messy ?loc))
         )
 
         :effect (and
             (holding ?k)
+            (not (arm-free))
             (not (key-at ?k ?loc))
-            (not (handfree))
         )
     )
 
@@ -116,8 +123,8 @@
 
         :effect (and
             (not (holding ?k))
+            (arm-free)
             (key-at ?k ?loc)
-            (handfree)
         )
     )
 
@@ -136,31 +143,41 @@
 
         :precondition (and
             (hero-at ?loc)
-            (touches ?loc ?cor)
-            (holding ?k)
-            (usable ?k)
+            (touches ?cor ?loc)
+
             (locked ?cor)
             (lock-colour ?cor ?col)
+
+            (holding ?k)
             (key-colour ?k ?col)
+            (usable ?k)
         )
 
         :effect (and
             (not (locked ?cor))
+
+            ; one-use: after unlocking once, no longer usable
             (when (one-use ?k)
                 (and
-                    (used-once ?k)
                     (not (usable ?k))
                 )
             )
+
+            ; two-use: first time -> mark used-once (still usable)
             (when (and (two-use ?k) (not (used-once ?k)))
-                (used-once ?k)
+                (and
+                    (used-once ?k)
+                )
             )
+
+            ; two-use: second time -> no longer usable
             (when (and (two-use ?k) (used-once ?k))
                 (and
-                    (used-twice ?k)
                     (not (usable ?k))
                 )
             )
+
+            ; multi-use: no change needed
         )
     )
 
