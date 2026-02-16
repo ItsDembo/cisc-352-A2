@@ -14,30 +14,21 @@
 
     ; Hero location and carrying status
     (hero-at loc-2-2)
-    (handfree)
+    (arm-free)
 
-    ; Location <> Corridor Connections
-    (adjacent loc-2-1 loc-2-2 c2122)
-    (adjacent loc-2-2 loc-2-1 c2122)
-    (adjacent loc-1-2 loc-2-2 c1222)
-    (adjacent loc-2-2 loc-1-2 c1222)
-    (adjacent loc-2-2 loc-3-2 c2232)
-    (adjacent loc-3-2 loc-2-2 c2232)
-    (adjacent loc-3-2 loc-4-2 c3242)
-    (adjacent loc-4-2 loc-3-2 c3242)
-    (adjacent loc-2-2 loc-2-3 c2223)
-    (adjacent loc-2-3 loc-2-2 c2223)
+    ; Locationg <> Corridor Connections
+    (connects c2122 loc-2-1 loc-2-2)
+    (connects c1222 loc-1-2 loc-2-2)
+    (connects c2232 loc-2-2 loc-3-2)
+    (connects c3242 loc-3-2 loc-4-2)
+    (connects c2223 loc-2-2 loc-2-3)
 
-    (touches loc-2-1 c2122)
-    (touches loc-2-2 c2122)
-    (touches loc-1-2 c1222)
-    (touches loc-2-2 c1222)
-    (touches loc-2-2 c2232)
-    (touches loc-3-2 c2232)
-    (touches loc-3-2 c3242)
-    (touches loc-4-2 c3242)
-    (touches loc-2-2 c2223)
-    (touches loc-2-3 c2223)
+    ; Touches - Location touches a corridor
+    (touches c2122 loc-2-1) (touches c2122 loc-2-2)
+    (touches c1222 loc-1-2) (touches c1222 loc-2-2)
+    (touches c2232 loc-2-2) (touches c2232 loc-3-2)
+    (touches c3242 loc-3-2) (touches c3242 loc-4-2)
+    (touches c2223 loc-2-2) (touches c2223 loc-2-3)
 
     ; Key locations
     (key-at key1 loc-2-1)
@@ -46,16 +37,14 @@
     (key-at key4 loc-2-3)
 
     ; Locked corridors
-    (locked c2122)
-    (lock-colour c2122 purple)
-    (locked c1222)
-    (lock-colour c1222 yellow)
-    (locked c2232)
-    (lock-colour c2232 yellow)
-    (locked c3242)
-    (lock-colour c3242 rainbow)
-    (locked c2223)
-    (lock-colour c2223 green)
+    (locked c2122) (lock-colour c2122 purple)
+    (locked c1222) (lock-colour c1222 yellow)
+    (locked c2232) (lock-colour c2232 yellow)
+    (locked c3242) (lock-colour c3242 rainbow)
+    (locked c2223) (lock-colour c2223 green)
+
+    ; Risky corridors
+    ; No red locks, so no risky corridors
 
     ; Key colours
     (key-colour key1 green)
@@ -64,14 +53,16 @@
     (key-colour key4 yellow)
 
     ; Key usage properties (one use, two use, etc)
-    (one-use key1)
-    (one-use key2)
-    (one-use key3)
+    (multi-use key2)
     (two-use key4)
+    (one-use key1)
+    (one-use key3)
+
     (usable key1)
     (usable key2)
     (usable key3)
     (usable key4)
+
 
   )
   (:goal
