@@ -1,9 +1,6 @@
 (define (problem p1-dungeon)
   (:domain Dungeon)
 
-  ; Naming convention:
-  ; - loc-{i}-{j} refers to the location at the i'th column and j'th row (starting in top left corner)
-  ; - c{i}{j}{h}{k} refers to the corridor connecting loc-{i}-{j} and loc-{h}-{k}
   (:objects
     loc-3-1 loc-1-2 loc-2-2 loc-3-2 loc-4-2 loc-2-3 loc-3-3 loc-2-4 loc-3-4 loc-4-4 - location
     key1 key2 key3 key4 - key
@@ -16,20 +13,41 @@
     (hero-at loc-1-2)
     (arm-free)
 
-    ; Locationg <> Corridor Connections
+    ; Corridor connections (both directions)
     (connects c3132 loc-3-1 loc-3-2)
-    (connects c1222 loc-1-2 loc-2-2)
-    (connects c2232 loc-2-2 loc-3-2)
-    (connects c3242 loc-3-2 loc-4-2)
-    (connects c2223 loc-2-2 loc-2-3)
-    (connects c3233 loc-3-2 loc-3-3)
-    (connects c2333 loc-2-3 loc-3-3)
-    (connects c2324 loc-2-3 loc-2-4)
-    (connects c3334 loc-3-3 loc-3-4)
-    (connects c2434 loc-2-4 loc-3-4)
-    (connects c3444 loc-3-4 loc-4-4)
+    (connects c3132 loc-3-2 loc-3-1)
 
-    ; Touches - Location touches a corridor
+    (connects c1222 loc-1-2 loc-2-2)
+    (connects c1222 loc-2-2 loc-1-2)
+
+    (connects c2232 loc-2-2 loc-3-2)
+    (connects c2232 loc-3-2 loc-2-2)
+
+    (connects c3242 loc-3-2 loc-4-2)
+    (connects c3242 loc-4-2 loc-3-2)
+
+    (connects c2223 loc-2-2 loc-2-3)
+    (connects c2223 loc-2-3 loc-2-2)
+
+    (connects c3233 loc-3-2 loc-3-3)
+    (connects c3233 loc-3-3 loc-3-2)
+
+    (connects c2333 loc-2-3 loc-3-3)
+    (connects c2333 loc-3-3 loc-2-3)
+
+    (connects c2324 loc-2-3 loc-2-4)
+    (connects c2324 loc-2-4 loc-2-3)
+
+    (connects c3334 loc-3-3 loc-3-4)
+    (connects c3334 loc-3-4 loc-3-3)
+
+    (connects c2434 loc-2-4 loc-3-4)
+    (connects c2434 loc-3-4 loc-2-4)
+
+    (connects c3444 loc-3-4 loc-4-4)
+    (connects c3444 loc-4-4 loc-3-4)
+
+    ; Touches (for unlock adjacency)
     (touches c3132 loc-3-1) (touches c3132 loc-3-2)
     (touches c1222 loc-1-2) (touches c1222 loc-2-2)
     (touches c2232 loc-2-2) (touches c2232 loc-3-2)
@@ -70,7 +88,6 @@
     (two-use key2)
     (one-use key3)
     (one-use key4)
-
 
     (usable key1)
     (usable key2)
