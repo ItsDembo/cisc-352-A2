@@ -18,58 +18,49 @@
     )
 
     ; You may introduce whatever predicates you would like to use
-(:predicates
-    ; given
-    (hero-at ?loc - location)
+    (:predicates
+        ; given
+        (hero-at ?loc - location)
 
-    ; map / connectivity
-    (connects ?cor - corridor ?a - location ?b - location)
-    (touches ?cor - corridor ?loc - location)
+        ; map / connectivity
+        (connects ?cor - corridor ?a - location ?b - location)
+        (touches ?cor - corridor ?loc - location)
 
-    ; corridor state
-    (locked ?cor - corridor)
-    (lock-colour ?cor - corridor ?col - colour)
-    (risky ?cor - corridor)
-    (collapsed ?cor - corridor)
+        ; corridor state
+        (locked ?cor - corridor)
+        (lock-colour ?cor - corridor ?col - colour)
+        (risky ?cor - corridor)
+        (collapsed ?cor - corridor)
 
-    ; room state
-    (messy ?loc - location)
+        ; room state
+        (messy ?loc - location)
 
-    ; keys & inventory
-    (key-at ?k - key ?loc - location)
-    (holding ?k - key)
-    (arm-free)
+        ; keys & inventory
+        (key-at ?k - key ?loc - location)
+        (holding ?k - key)
+        (arm-free)
 
-    ; key attributes & durability
-    (key-colour ?k - key ?col - colour)
-    (usable ?k - key)
-    (one-use ?k - key)
-    (two-use ?k - key)
-    (multi-use ?k - key)
-    (used-once ?k - key)
-)
+        ; key attributes & durability
+        (key-colour ?k - key ?col - colour)
+        (usable ?k - key)
+        (one-use ?k - key)
+        (two-use ?k - key)
+        (multi-use ?k - key)
+        (used-once ?k - key)
+    )
 
     ; IMPORTANT: You should not change/add/remove the action names or parameters
 
-    ;Hero can move if the
-    ;    - hero is at current location ?from,
-    ;    - hero will move to location ?to,
-    ;    - corridor ?cor exists between the ?from and ?to locations
-    ;    - there isn't a locked door in corridor ?cor
-    ;Effects move the hero, and collapse the corridor if it's "risky" (also causing a mess in the ?to location)
     (:action move
-
         :parameters (?from ?to - location ?cor - corridor)
 
         :precondition (and
             (hero-at ?from)
-            (or
-                (connects ?cor ?from ?to)
-                (connects ?cor ?to ?from)
-            )
+            (connects ?cor ?from ?to)
             (not (locked ?cor))
             (not (collapsed ?cor))
         )
+
         :effect (and
             (not (hero-at ?from))
             (hero-at ?to)
@@ -83,15 +74,7 @@
         )
     )
 
-
-    ;Hero can pick up a key if the
-    ;    - hero is at current location ?loc,
-    ;    - there is a key ?k at location ?loc,
-    ;    - the hero's arm is free,
-    ;    - the location is not messy
-    ;Effect will have the hero holding the key and their arm no longer being free
     (:action pick-up
-
         :parameters (?loc - location ?k - key)
 
         :precondition (and
@@ -108,12 +91,7 @@
         )
     )
 
-    ;Hero can drop a key if the
-    ;    - hero is holding a key ?k,
-    ;    - the hero is at location ?loc
-    ;Effect will be that the hero is no longer holding the key
     (:action drop
-
         :parameters (?loc - location ?k - key)
 
         :precondition (and
@@ -128,17 +106,7 @@
         )
     )
 
-
-    ;Hero can use a key for a corridor if
-    ;    - the hero is holding a key ?k,
-    ;    - the key still has some uses left,
-    ;    - the corridor ?cor is locked with colour ?col,
-    ;    - the key ?k is if the right colour ?col,
-    ;    - the hero is at location ?loc
-    ;    - the corridor is connected to the location ?loc
-    ;Effect will be that the corridor is unlocked and the key usage will be updated if necessary
     (:action unlock
-
         :parameters (?loc - location ?cor - corridor ?col - colour ?k - key)
 
         :precondition (and
@@ -158,35 +126,24 @@
 
             ; one-use: after unlocking once, no longer usable
             (when (one-use ?k)
-                (and
-                    (not (usable ?k))
-                )
+                (not (usable ?k))
             )
 
             ; two-use: first time -> mark used-once (still usable)
             (when (and (two-use ?k) (not (used-once ?k)))
-                (and
-                    (used-once ?k)
-                )
+                (used-once ?k)
             )
 
             ; two-use: second time -> no longer usable
             (when (and (two-use ?k) (used-once ?k))
-                (and
-                    (not (usable ?k))
-                )
+                (not (usable ?k))
             )
 
             ; multi-use: no change needed
         )
     )
 
-    ;Hero can clean a location if
-    ;    - the hero is at location ?loc,
-    ;    - the location is messy
-    ;Effect will be that the location is no longer messy
     (:action clean
-
         :parameters (?loc - location)
 
         :precondition (and
