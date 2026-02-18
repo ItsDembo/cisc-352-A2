@@ -1,6 +1,9 @@
 (define (problem p1-dungeon)
   (:domain Dungeon)
 
+  ; Naming convention:
+  ; - loc-{i}-{j} refers to the location at the i'th column and j'th row (starting in top left corner)
+  ; - c{i}{j}{h}{k} refers to the corridor connecting loc-{i}-{j} and loc-{h}-{k}
   (:objects
     loc-3-1 loc-1-2 loc-2-2 loc-3-2 loc-4-2 loc-2-3 loc-3-3 loc-2-4 loc-3-4 loc-4-4 - location
     key1 key2 key3 key4 - key
@@ -9,11 +12,11 @@
 
   (:init
 
-    ; Hero
+    ; Hero location and carrying status
     (hero-at loc-1-2)
     (arm-free)
 
-    ; Corridor connections (both directions)
+    ; Locationg <> Corridor Connections
     (connects c3132 loc-3-1 loc-3-2)
     (connects c3132 loc-3-2 loc-3-1)
 
@@ -47,7 +50,7 @@
     (connects c3444 loc-3-4 loc-4-4)
     (connects c3444 loc-4-4 loc-3-4)
 
-    ; Touches (for unlock adjacency)
+    ; Touches - Location touches a corridor
     (touches c3132 loc-3-1) (touches c3132 loc-3-2)
     (touches c1222 loc-1-2) (touches c1222 loc-2-2)
     (touches c2232 loc-2-2) (touches c2232 loc-3-2)
@@ -60,6 +63,12 @@
     (touches c2434 loc-2-4) (touches c2434 loc-3-4)
     (touches c3444 loc-3-4) (touches c3444 loc-4-4)
 
+    ; Key locations
+    (key-at key1 loc-2-2)
+    (key-at key2 loc-2-4)
+    (key-at key3 loc-4-2)
+    (key-at key4 loc-4-4)
+
     ; Locked corridors
     (locked c2324) (lock-colour c2324 red)
     (locked c2434) (lock-colour c2434 red)
@@ -67,15 +76,9 @@
     (locked c3444) (lock-colour c3444 yellow)
     (locked c3132) (lock-colour c3132 rainbow)
 
-    ; Risky corridors (red locks are risky)
+    ; Risky corridors
     (risky c2324)
     (risky c2434)
-
-    ; Keys at locations
-    (key-at key1 loc-2-2)
-    (key-at key2 loc-2-4)
-    (key-at key3 loc-4-2)
-    (key-at key4 loc-4-4)
 
     ; Key colours
     (key-colour key1 red)
@@ -83,7 +86,7 @@
     (key-colour key3 rainbow)
     (key-colour key4 purple)
 
-    ; Key usage
+    ; Key usage properties (one use, two use, etc)
     (multi-use key1)
     (two-use key2)
     (one-use key3)
@@ -93,10 +96,11 @@
     (usable key2)
     (usable key3)
     (usable key4)
-  )
 
+  )
   (:goal
     (and
+      ; Hero's final location goes here
       (hero-at loc-3-1)
     )
   )
