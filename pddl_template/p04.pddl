@@ -21,11 +21,22 @@
 
     ; Location <> Corridor Connections
     (connects c1121 loc-1-1 loc-2-1)
+    (connects c1121 loc-2-1 loc-1-1)
+
     (connects c2131 loc-2-1 loc-3-1)
+    (connects c2131 loc-3-1 loc-2-1)
+
     (connects c3141 loc-3-1 loc-4-1)
+    (connects c3141 loc-4-1 loc-3-1)
+
     (connects c4151 loc-4-1 loc-5-1)
+    (connects c4151 loc-5-1 loc-4-1)
+
     (connects c5161 loc-5-1 loc-6-1)
+    (connects c5161 loc-6-1 loc-5-1)
+
     (connects c6171 loc-6-1 loc-7-1)
+    (connects c6171 loc-7-1 loc-6-1)
 
     ; Touches - Location touches a corridor
     (touches c1121 loc-1-1) (touches c1121 loc-2-1)
