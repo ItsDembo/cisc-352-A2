@@ -1,6 +1,9 @@
 (define (problem p2-dungeon)
   (:domain Dungeon)
 
+  ; Naming convention:
+  ; - loc-{i}-{j} refers to the location at the i'th column and j'th row (starting in top left corner)
+  ; - c{i}{j}{h}{k} refers to the corridor connecting loc-{i}-{j} and loc-{h}-{k}
   (:objects
     loc-2-1 loc-1-2 loc-2-2 loc-3-2 loc-4-2 loc-2-3 - location
     key1 key2 key3 key4 - key
@@ -13,7 +16,7 @@
     (hero-at loc-2-2)
     (arm-free)
 
-    ; Location <> Corridor Connections (BOTH directions)
+    ; Locationg <> Corridor Connections
     (connects c2122 loc-2-1 loc-2-2)
     (connects c2122 loc-2-2 loc-2-1)
 
@@ -73,6 +76,7 @@
 
   (:goal
     (and
+      ; Hero's final location goes here
       (hero-at loc-4-2)
     )
   )
